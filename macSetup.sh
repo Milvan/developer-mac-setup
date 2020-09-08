@@ -8,10 +8,29 @@ red=`tput setaf 1`
 green=`tput setaf 2`
 reset=`tput sgr0`
 
-# if test ! $(which gcc); then
-#   echo "Installing command line developer tools..."
-#   xcode-select --install
-# fi
+echo -n "Do you wish to install General Tools (${bold}${green}y${reset}/${bold}${red}n${reset})? "
+read General
+
+echo -n "Do you wish to install Developer Utilities (${bold}${green}y${reset}/${bold}${red}n${reset})? "
+read DeveloperUtilities
+
+echo -n "Do you wish to install Database Tools (${bold}${green}y${reset}/${bold}${red}n${reset})? "
+read Database
+
+echo -n "Do you wish to install IDEs (${bold}${green}y${reset}/${bold}${red}n${reset})? "
+read IDEs
+
+echo -n "Do you wish to install DevOps Tools (${bold}${green}y${reset}/${bold}${red}n${reset})? "
+read DevOps
+
+echo -n "Do you wish to install Productivity Tools (${bold}${green}y${reset}/${bold}${red}n${reset})? "
+read Productivity
+
+echo -n "Do you wish to install Mac Application (${bold}${green}y${reset}/${bold}${red}n${reset})? "
+read MacApplication
+
+echo "Installing command line developer tools..."
+xcode-select --install
 
 if test ! $(which brew); then
   echo "Installing homebrew..."
@@ -41,8 +60,6 @@ beginDeploy() {
 
 ############# General Tools #############
 beginDeploy "############# General Tools #############"
-echo -n "Do you wish to install General Tools (${bold}${green}y${reset}/${bold}${red}n${reset})? "
-read General
 
 CaskGeneralToolList=(
     google-chrome
@@ -50,17 +67,14 @@ CaskGeneralToolList=(
     spotify
 )
 if [ "$General" != "${General#[Yy]}" ] ;then
-    echo Yes
     brew cask install --appdir="/Applications" ${CaskGeneralToolList[@]}
 else
-    echo No
+    echo No general tools
 fi
 
 
 ############# Developer Utilities #############
 beginDeploy "############# Developer Utilities #############"
-echo -n "Do you wish to install Developer Utilities (${bold}${green}y${reset}/${bold}${red}n${reset})? "
-read DeveloperUtilities
 
 DeveloperUtilitiesList=(
     tree
@@ -93,10 +107,10 @@ CaskDeveloperUtilitiesList=(
 )
 if [ "$DeveloperUtilities" != "${DeveloperUtilities#[Yy]}" ] ;then
     
-    echo Yes
     brew install ${DeveloperUtilitiesList[@]}
     brew cask install ${CaskDeveloperUtilitiesList[@]}
 
+    brew link vim
 
     mkdir ~/.nvm
     echo '
@@ -111,7 +125,7 @@ if [ "$DeveloperUtilities" != "${DeveloperUtilities#[Yy]}" ] ;then
     [[ -r "$(brew --prefix)/etc/profile.d/bash_completion.sh" ]] && . "$(brew --prefix)/etc/profile.d/bash_completion.sh"' >> ~/.bash_profile
     
 else
-    echo No
+    echo No developer utils tools
 fi
 
 ############# ZSH mods #######################
@@ -119,8 +133,6 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 
 ############# Database Tools #############
 beginDeploy "############# Database Tools #############"
-echo -n "Do you wish to install Database Tools (${bold}${green}y${reset}/${bold}${red}n${reset})? "
-read Database
 
 
 DatabaseToolList=(
@@ -130,19 +142,16 @@ CaskDatabaseToolList=(
     graphiql
 )
 if [ "$Database" != "${Database#[Yy]}" ] ;then
-    echo Yes
     brew install ${DatabaseToolList[@]}
     brew cask install ${CaskDatabaseToolList[@]}
 
 else
-    echo No
+    echo No DB tools
 fi
 
 
 ############# IDEs #############
 beginDeploy "############# IDEs #############"
-echo -n "Do you wish to install IDEs (${bold}${green}y${reset}/${bold}${red}n${reset})? "
-read IDEs
 
 CaskIDEsList=(
     visual-studio-code
@@ -151,21 +160,16 @@ CaskIDEsList=(
     # android-studio
 )
 if [ "$IDEs" != "${IDEs#[Yy]}" ] ;then
-    echo Yes
     brew cask install --appdir="/Applications" ${CaskIDEsList[@]}
     cat vscode-extensions.txt | xargs -L1 code --install-extension
 
-    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 else
-    echo No
+    echo No IDEs
 fi
 
 
 ############# DevOps #############
 beginDeploy "############# DevOps #############"
-echo -n "Do you wish to install DevOps Tools (${bold}${green}y${reset}/${bold}${red}n${reset})? "
-read DevOps
-
 
 DevOpsToolList=(
     terraform
@@ -187,7 +191,6 @@ CaskDevOpsToolList=(
     vagrant-manager
 )
 if [ "$DevOps" != "${DevOps#[Yy]}" ] ;then
-    echo Yes
     brew install ${DevOpsToolList[@]}
     brew cask install ${CaskDevOpsToolList[@]}
 
@@ -212,14 +215,12 @@ if [ "$DevOps" != "${DevOps#[Yy]}" ] ;then
     # sudo ./aws/install
     # aws2 --version
 else
-    echo No
+    echo No Devops
 fi
 
 
 ############# Productivity Tools #############
 beginDeploy "############# Productivity Tools #############"
-echo -n "Do you wish to install Productivity Tools (${bold}${green}y${reset}/${bold}${red}n${reset})? "
-read Productivity
 
 CaskProductivityToolList=(
     slack
@@ -232,17 +233,15 @@ CaskProductivityToolList=(
     # zoomus
 )
 if [ "$Productivity" != "${Productivity#[Yy]}" ] ;then
-    echo Yes
     brew cask install --appdir="/Applications" ${CaskProductivityToolList[@]}
 else
-    echo No
+    echo No Productivity
 fi
 
 
 ############# Mac Application #############
 beginDeploy "############# Mac Application #############"
-echo -n "Do you wish to install Mac Application (${bold}${green}y${reset}/${bold}${red}n${reset})? "
-read MacApplication
+
 
 MacApplicationToolList=(
     # 409183694 # Keynote
@@ -271,18 +270,6 @@ fi
 beginDeploy "############# CLEANING HOMEBREW #############"
 brew cleanup
 
-# beginDeploy "############# GLOBAL GIT CONFIG #############"
-# sh -c 'curl -s https://raw.githubusercontent.com/maxyermayank/developer-mac-setup/master/.gitignore >> ~/.gitignore'
-#
-# git config --global push.default current
-# git config --global core.excludesfile ~/.gitignore
-# git config --global user.name "<username>"
-# git config --global user.email <email>
-# git config --global color.branch auto
-# git config --global color.diff auto
-# git config --global color.interactive auto
-# git config --global color.status auto
-
 # beginDeploy "############# ALIASES #############"
 
 # beginDeploy "############# DOCKER ALIASES #############"
@@ -298,16 +285,19 @@ beginDeploy "############# SETUP BASH PROFILE #############"
 source ~/.bash_profile
 
 beginDeploy "############# Copy config files  #############"
-cd
-rm -r ~/.vim ~/.vimrc ~/.tmux.conf ~/.zshrc ~/.gitconfig
-ln -s vimrc ~/.vimrc
-ln -s tmux.conf ~/.tmux.conf
-ln -s zshrc ~/.zshrc
-ln -s gitconfig ~/.gitconfig
+currentdir=`pwd`
 
-source ~/.zshrc
-source ~/.tmux.conf
-source ~/.vimrc
+rm -r ~/.vim ~/.vimrc ~/.tmux.conf ~/.zshrc ~/.gitconfig
+ln -s $currentdir/vimrc ~/.vimrc
+ln -s $currentdir/tmux.conf ~/.tmux.conf
+ln -s $currentdir/zshrc ~/.zshrc
+ln -s $currentdir/gitconfig ~/.gitconfig
+ln -s $currentdir/vim ~/.vim
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+vim +PluginInstall +qall
+
+beginDeploy "############ Custom Dvorak Keyboard layout####"
+cp $currentdir/keyboard_layout/* /Library/Keyboard\ Layouts/.
 
 runtime=$((($(date +%s)-$start)/60))
 beginDeploy "############# Total Setup Time ############# $runtime Minutes"
