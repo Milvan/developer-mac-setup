@@ -56,37 +56,6 @@ else
     echo No
 fi
 
-############# Designer #############
-beginDeploy "############# Designer #############"
-echo -n "Do you wish to install Designer Tools (${bold}${green}y${reset}/${bold}${red}n${reset})? "
-read Designer
-
-CaskDesignerToolList=(
-    adobe-creative-cloud
-)
-if [ "$Designer" != "${Designer#[Yy]}" ] ;then
-    echo Yes
-    brew cask install --appdir="/Applications" ${CaskDesignerToolList[@]}
-else
-    echo No
-fi
-
-
-############# Mobile Developer #############
-beginDeploy "############# Mobile Developer #############"
-echo -n "Do you wish to install Mobile Developer Tools (${bold}${green}y${reset}/${bold}${red}n${reset})? "
-read MobileDeveloper
-
-CaskMobileDeveloperToolList=(
-    fastlane
-)
-if [ "$MobileDeveloper" != "${MobileDeveloper#[Yy]}" ] ;then
-    echo Yes
-    brew cask install ${CaskMobileDeveloperToolList[@]}
-else
-    echo No
-fi
-
 
 ############# Developer Utilities #############
 beginDeploy "############# Developer Utilities #############"
@@ -97,7 +66,6 @@ DeveloperUtilitiesList=(
     tree
     ctop
     jq
-    httpie
     yarn
     yarn-completion
     netcat
@@ -106,13 +74,20 @@ DeveloperUtilitiesList=(
     go
     nvm
     bash-completion
+    zsh
+    zsh-completions
+    vim
+    python3
+    node
+    tmux
+    reattach-to-user-namespace
 )
 CaskDeveloperUtilitiesList=(
     cheatsheet
-    spectacle
+    rectangle
     postman
-    dotnet-sdk
-    wireshark
+    # dotnet-sdk
+    # wireshark
     # google-chrome-canary
     # firefox-developer-edition
 )
@@ -134,17 +109,13 @@ if [ "$DeveloperUtilities" != "${DeveloperUtilities#[Yy]}" ] ;then
     echo '
     # BASH-COMPLETION CONFIG
     [[ -r "$(brew --prefix)/etc/profile.d/bash_completion.sh" ]] && . "$(brew --prefix)/etc/profile.d/bash_completion.sh"' >> ~/.bash_profile
-
-
-    curl -s "https://get.sdkman.io" | bash
-    echo '
-    # THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-    export SDKMAN_DIR="/Users/mpatel/.sdkman"
-    [[ -s "/Users/mpatel/.sdkman/bin/sdkman-init.sh" ]] && source "${HOME}/.sdkman/bin/sdkman-init.sh"' >> ~/.bash_profile
+    
 else
     echo No
 fi
 
+############# ZSH mods #######################
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 ############# Database Tools #############
 beginDeploy "############# Database Tools #############"
@@ -156,10 +127,7 @@ DatabaseToolList=(
     kafkacat
 )
 CaskDatabaseToolList=(
-    pgadmin4
-    studio-3t
     graphiql
-    azure-data-studio
 )
 if [ "$Database" != "${Database#[Yy]}" ] ;then
     echo Yes
@@ -179,13 +147,15 @@ read IDEs
 CaskIDEsList=(
     visual-studio-code
     intellij-idea
-    visual-studio
-    android-studio
+    # visual-studio
+    # android-studio
 )
 if [ "$IDEs" != "${IDEs#[Yy]}" ] ;then
     echo Yes
     brew cask install --appdir="/Applications" ${CaskIDEsList[@]}
     cat vscode-extensions.txt | xargs -L1 code --install-extension
+
+    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 else
     echo No
 fi
@@ -201,17 +171,17 @@ DevOpsToolList=(
     terraform
     vault
     consul
-    nomad
-    packer
-    terragrunt
+    # nomad
+    # packer
+    # terragrunt
     ansible
-    awscli
-    aws-sam-cli
-    kompose
+    # awscli
+    # aws-sam-cli
+    # kompose
 )
 CaskDevOpsToolList=(
     vagrant
-    vmware-fusion
+    # vmware-fusion
     virtualbox
     docker
     vagrant-manager
@@ -222,7 +192,7 @@ if [ "$DevOps" != "${DevOps#[Yy]}" ] ;then
     brew cask install ${CaskDevOpsToolList[@]}
 
     ## DOCKER APP
-    wget -P ~/Downloads/ https://github.com/docker/app/releases/download/v0.6.0/docker-app-darwin.tar.gz
+    wget -P ~/Downloads/ https://github.com/docker/app/releases/download/v0.8.0/docker-app-darwin.tar.gz
     tar -xvf ~/Downloads/docker-app-darwin.tar.gz -C ~/Downloads/
     mv ~/Downloads/docker-app-darwin /usr/local/bin/docker-app
     rm ~/Downloads/docker-app-darwin.tar.gz
@@ -233,14 +203,14 @@ if [ "$DevOps" != "${DevOps#[Yy]}" ] ;then
     #curl -O https://bootstrap.pypa.io/get-pip.py
     #python3 get-pip.py --user
     #pip3 install awscli --upgrade --user
-    aws --version
+    # aws --version
     #rm get-pip.py
 
 
-    curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-macos.zip" -o "awscliv2.zip"
-    unzip awscliv2.zip
-    sudo ./aws/install
-    aws2 --version
+    # curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-macos.zip" -o "awscliv2.zip"
+    # unzip awscliv2.zip
+    # sudo ./aws/install
+    # aws2 --version
 else
     echo No
 fi
@@ -253,13 +223,13 @@ read Productivity
 
 CaskProductivityToolList=(
     slack
-    evernote
-    the-unarchiver
-    dash
-    gpg-suite
-    microsoft-teams
-    microsoft-office
-    zoomus
+    # evernote
+    # the-unarchiver
+    # dash
+    # gpg-suite
+    # microsoft-teams
+    # microsoft-office
+    # zoomus
 )
 if [ "$Productivity" != "${Productivity#[Yy]}" ] ;then
     echo Yes
@@ -275,14 +245,14 @@ echo -n "Do you wish to install Mac Application (${bold}${green}y${reset}/${bold
 read MacApplication
 
 MacApplicationToolList=(
-    409183694 # Keynote
-    409203825 # Numbers
-    409201541 # Pages
+    # 409183694 # Keynote
+    # 409203825 # Numbers
+    # 409201541 # Pages
     497799835 # Xcode
-    1450874784 # Transporter
-    1274495053 # Microsoft To Do
+    # 1450874784 # Transporter
+    # 1274495053 # Microsoft To Do
     1295203466 # Microsoft Remote Desktop 10
-    985367838 # Microsoft Outlook
+    # 985367838 # Microsoft Outlook
 )
 if [ "$MacApplication" != "${MacApplication#[Yy]}" ] ;then
     brew install mas
@@ -301,25 +271,24 @@ fi
 beginDeploy "############# CLEANING HOMEBREW #############"
 brew cleanup
 
-beginDeploy "############# GLOBAL GIT CONFIG #############"
-sh -c 'curl -s https://raw.githubusercontent.com/maxyermayank/developer-mac-setup/master/.gitignore >> ~/.gitignore'
-git config --global push.default current
-git config --global core.excludesfile ~/.gitignore
-git config --global user.name "<username>"
-git config --global user.email <email>
-git config --global color.branch auto
-git config --global color.diff auto
-git config --global color.interactive auto
-git config --global color.status auto
+# beginDeploy "############# GLOBAL GIT CONFIG #############"
+# sh -c 'curl -s https://raw.githubusercontent.com/maxyermayank/developer-mac-setup/master/.gitignore >> ~/.gitignore'
+#
+# git config --global push.default current
+# git config --global core.excludesfile ~/.gitignore
+# git config --global user.name "<username>"
+# git config --global user.email <email>
+# git config --global color.branch auto
+# git config --global color.diff auto
+# git config --global color.interactive auto
+# git config --global color.status auto
 
-beginDeploy "############# ALIASES #############"
-beginDeploy "############# GIT ALIASES #############"
-sh -c 'curl -s https://raw.githubusercontent.com/maxyermayank/developer-mac-setup/master/.git_aliases >> ~/.git_aliases'
-source ~/.git_aliases
+# beginDeploy "############# ALIASES #############"
 
-beginDeploy "############# DOCKER ALIASES #############"
-sh -c 'curl -s https://raw.githubusercontent.com/maxyermayank/developer-mac-setup/master/.docker_aliases >> ~/.docker_aliases'
-source ~/.docker_aliases
+# beginDeploy "############# DOCKER ALIASES #############"
+# sh -c 'curl -s https://raw.githubusercontent.com/maxyermayank/developer-mac-setup/master/.docker_aliases >> ~/.docker_aliases'
+# source ~/.docker_aliases
+# 
 
 beginDeploy "############# K8s ALIASES #############"
 sh -c 'curl -s https://raw.githubusercontent.com/maxyermayank/developer-mac-setup/master/.kubectl_aliases >> ~/.kubectl_aliases'
@@ -327,6 +296,18 @@ source ~/.kubectl_aliases
 
 beginDeploy "############# SETUP BASH PROFILE #############"
 source ~/.bash_profile
+
+beginDeploy "############# Copy config files  #############"
+cd
+rm -r ~/.vim ~/.vimrc ~/.tmux.conf ~/.zshrc ~/.gitconfig
+ln -s vimrc ~/.vimrc
+ln -s tmux.conf ~/.tmux.conf
+ln -s zshrc ~/.zshrc
+ln -s gitconfig ~/.gitconfig
+
+source ~/.zshrc
+source ~/.tmux.conf
+source ~/.vimrc
 
 runtime=$((($(date +%s)-$start)/60))
 beginDeploy "############# Total Setup Time ############# $runtime Minutes"
